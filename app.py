@@ -54,12 +54,42 @@ if aba == "Entregas":
         (df_entregas["Distância (km)"] < 600) &
         ((df_entregas["Custo Frete (R$)"] > 1000) | (df_entregas["Tempo de Entrega (dias)"] > 3))
     ][["Rota", "Distância (km)", "Custo Frete (R$)", "Tempo de Entrega (dias)", "Eficiência"]]
+
     st.dataframe(df_alerta, use_container_width=True)
 
+    st.markdown("""
+    💡 **Interpretação:**
+    - Foram identificadas entregas com **distância relativamente curta**, mas com **custos elevados** ou **tempo acima do esperado**.
+    - A **eficiência logística** (km por dia) é constante, mas os **valores pagos por frete variam muito**, mesmo para a mesma rota e prazo.
+    - Isso **indica oportunidades claras de padronização de preços** e revisão de contratos logísticos.
+
+    ✅ **Recomendações:**
+    - Auditar essas rotas para entender os fatores que elevam os custos (ex.: urgência, tipo de transporte).
+    - Estabelecer limites máximos aceitáveis para custo por km com base nas rotas mais eficientes.
+    """)
+
     st.subheader("📊 Relação entre Custo de Frete e Distância")
-    fig_disp = px.scatter(df_entregas, x="Distância (km)", y="Custo Frete (R$)", color="Rota", trendline="ols", color_discrete_sequence=px.colors.qualitative.Set1)
+    fig_disp = px.scatter(
+        df_entregas,
+        x="Distância (km)",
+        y="Custo Frete (R$)",
+        color="Rota",
+        trendline="ols",
+        color_discrete_sequence=px.colors.qualitative.Set1
+    )
     fig_disp.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     st.plotly_chart(fig_disp, use_container_width=True)
+
+    st.markdown("""
+    💡 **Interpretação:**
+    - Existe uma **relação linear visível** entre distância e custo de frete, como esperado.
+    - Porém, alguns pontos se **afastam da tendência geral**, indicando que **certos fretes estão custando além do previsto** para a distância percorrida.
+    - A regressão ajuda a destacar esses casos fora do padrão, que **podem representar desperdício financeiro**.
+
+    ✅ **Recomendações:**
+    - Investigar os **outliers** no gráfico e entender o motivo do desvio.
+    - Utilizar essa tendência como **referência base** para precificação futura de fretes, com margem de tolerância.
+    """)
 
     st.subheader("✅ Recomendações para Logística")
     st.markdown('''
